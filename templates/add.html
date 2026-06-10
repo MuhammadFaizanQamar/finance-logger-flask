@@ -1,0 +1,60 @@
+ {% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+    <div class="card">
+        <div class="card-body">
+
+            <h3 class="mb-4">Add Transaction</h3>
+
+            <form method="POST">
+
+                <div class="mb-3">
+                    <label class="form-label">Amount</label>
+                    <input type="number"
+                           name="amount"
+                           class="form-control"
+                           required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Type</label>
+                    <select name="type" class="form-select">
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <input type="text"
+                           name="category"
+                           class="form-control"
+                           required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <input type="text"
+                           name="description"
+                           class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">
+                    Add Transaction
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}
+
