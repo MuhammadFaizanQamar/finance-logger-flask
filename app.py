@@ -59,5 +59,23 @@ def delete_transaction(id):
     db.session.commit()
     return redirect(url_for('dashboard'))
 
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit_transaction(id):
+    transaction = Transaction.query.get_or_404(id)
+    if request.method == 'POST':
+        amount = request.form.get('amount')
+        type = request.form.get('type')
+        category = request.form.get('category')
+        description = request.form.get('description')
+        transaction.amount = float(amount)
+        transaction.type = type
+        transaction.category = category
+        transaction.description = description
+        db.session.commit()
+        
+        return redirect(url_for('dashboard'))
+    else:
+        return render_template('edit.html', transaction=transaction)
+
 if __name__ == '__main__':
     app.run(debug=True)
