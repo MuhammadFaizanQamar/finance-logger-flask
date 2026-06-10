@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 import os
 from flask import request
 from flask import redirect, url_for
+from datetime import datetime
+from collections import defaultdict
 
 load_dotenv()
 
@@ -20,18 +22,36 @@ with app.app_context():
 
 @app.route('/')
 def dashboard():
-    transactions = Transaction.query.order_by(Transaction.date.desc()).all()
     
+    now = datetime.now()
+    month = now.month 
+    year = now.year 
+    
+    transactions = Transaction.query.filter(
+        db.extract('month', Transaction.date) == now.month,
+        db.extract('year', Transaction.date) == now.year
+    ).order_by(Transaction.date.desc()).all()
+
+    category_expenses = defaultdict(float)
+    for t in transactions:
+        if t.type == 'expense':
+            category_expenses[t.category] += t.amount
+
     total_income = sum(t.amount for t in transactions if t.type == 'income')
     total_expenses = sum(t.amount for t in transactions if t.type == 'expense')
     balance = total_income - total_expenses
     
-    return render_template('dashboard.html',
+    return render_template(
+        'dashboard.html',
         transactions=transactions,
         total_income=total_income,
         total_expenses=total_expenses,
-        balance=balance
-    )
+        balance=balance,
+        month=month,
+        year=year,
+        category_labels=list(category_expenses.keys()),
+        category_data=list(category_expenses.values())
+)
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_transaction():

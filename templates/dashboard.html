@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<h2 class="mb-4">
+    Transactions for {{ month }}/{{ year }}
+</h2>
 
 <div class="row mb-4">
     <div class="col-md-4">
@@ -52,8 +55,8 @@
             <td>
                 <form method="POST" action="/delete/{{ transaction.id }}" style="display:inline;">
                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                <a href="/edit/{{ transaction.id }}" class="btn btn-warning btn-sm">Edit</a>
                 </form>
+                <a href="/edit/{{ transaction.id }}" class="btn btn-warning btn-sm">Edit</a>
             </td>
         </tr>
         {% endfor %}
@@ -62,5 +65,37 @@
 {% else %}
 <div class="alert alert-info">No transactions yet. Add your first one!</div>
 {% endif %}
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Expenses by Category</h5>
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const categoryLabels = {{ category_labels | tojson }};
+        const categoryData = {{ category_data | tojson }};
+
+        new Chart(document.getElementById('categoryChart'), {
+            type: 'pie',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    data: categoryData,
+                    backgroundColor: [
+                        '#FF6384', '#36A2EB', '#FFCE56',
+                        '#4BC0C0', '#9966FF', '#FF9F40'
+                    ]
+                }]
+            }
+        });
+    });
+</script>
 
 {% endblock %} 
